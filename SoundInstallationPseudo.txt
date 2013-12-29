@@ -1,0 +1,79 @@
+
+class Listener
+	
+	voices - list of list of progressions
+		voices[i] is a list of progressions of voice i
+		voices[i][j] is nth progression of voice i
+	progInd - what step in the progression it is
+	voiceInd - which voice to play
+	stateInd - which state/prog to play
+	playing - whether the loop is playing
+
+	realPlay()
+		if playing
+			phrase.play(voices[voiceInd][stateInd][progInd], voiceInd) //voiceInd specifies midi channel
+			progInd += 1
+			progInd %= 16
+			if progInd == 0
+				playing = false
+
+	changeState() - in response to state button push
+		state = stuff[0]
+
+	startVoice() - in response to automatic state change form Markov Chain
+		voiceInd = stuff[0]
+		stateInd = stuff[1]
+		playing = true
+	//watch out for state of “playing" variable. make sure this and realPLay() don’t block each other
+
+	pianoKey() - in response to a piano key down/up.  stuff = [note, on/off, channel]
+		phrase.play(stuff[0], stuff[1], stuff[2])
+	//“note" here is a chord object with 1 note in it
+	//will receive a single midi note value, must put it into a chord before playing
+
+______________________________________________________________________________________________
+
+class Sender
+
+	MarkovChain - a stochastic matrix
+	addresses - a list of addresses of computers in the network
+	MarkovAddress - address of the computer currently playing the meldoy
+	pianoAddresses - pianoKey to address mapping
+		when a key goes down, that key is mapped to an address. when it comes up, the address is cleared
+	keyToNote - the “key to note" mapping 
+	stateInd, voiceInd, progInd - as above
+	
+	stepper() - in response to the metronome
+		if progInd == 0 //ideally all files start on same index and metronome beat
+			markovAddress = adresses[random(0-9)]
+			stateInd = randomMarkovStep(markovChain, stateInd)
+			send(markovAddress+"startVoice", voiceInd, state)
+
+	markovButton() - in response to a top row button being pressed
+		stateInd = addrToInd(addr)
+		sebd(markovAddress+"changeState", stateInd)
+
+	pianoButton()
+		keyInd = addrToInd(addr)
+		if stuff[0] == 1
+			pianoAddresses[keyInd] = addresses[randpm(0-9)]
+			send(pianoAdress[keyInd]+"pianoKey", keyToNote(keyInd), ON, voiceInd+3)
+		else
+			send(pianoAdress[keyInd]+"pianoKey", keyToNote(keyInd), OFF, voiceInd+3)
+			pianoAddresses.remove(keyInd)
+			
+
+______________________________________________________________________________________________
+
+
+MARKOV MODEL FILE FORMAT (for one markov model)
+
+voice/midi channel
+number of states
+midiMelody1.midi midiMelody2.midi...... (strings of midi file names OR gridState files)
+probability matrix row 1
+probability matrix row 2
+...... rest of the rows of the probability matrix
+
+
+
