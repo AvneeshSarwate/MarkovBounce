@@ -75,5 +75,21 @@ probability matrix row 1
 probability matrix row 2
 ...... rest of the rows of the probability matrix
 
+______________________________________________________________________________________________
 
+testing order:
+	File parsing
+	
+	ONE COMPUTER
+	client hanlder functions (send from chuck)
+		and basic logic checking
+	LANdini sanity test
+	server (write a chuck loop to catch/print messages in order)
+		and bsaic logic checking
+		send thru landini
+	
+	TWO COMPUTERS
+	do 1 computer things across computer (send messages from comp1 to comp2)
+	run a real version across 2 computers
+		
 
