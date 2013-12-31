@@ -92,4 +92,7 @@ testing order:
 	do 1 computer things across computer (send messages from comp1 to comp2)
 	run a real version across 2 computers
 		
-
+______________________________________________________________________________________________
+server and client doing markov steps together when comp addresses is ['all']
+markov Button working
+Piano Button not working, but chuck simulation of it works
