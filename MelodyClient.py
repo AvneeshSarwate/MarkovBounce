@@ -20,12 +20,12 @@ class MelClient:
         '''
         
         self.progInd = 0
-        self.voiceInd = 0
-        self.stateInd = 0
+        self.voiceInd = {}
+        self.stateInd = {}
         self.playing = False
         
-        self.voiceIndBackup = 0
-        self.stateIndBackup = 0
+        self.voiceIndBackup = {}
+        self.stateIndBackup = {}
         self.playingBackup = False
         
         lenKeys = 8
@@ -53,28 +53,26 @@ class MelClient:
         
         #code to set up handlers
     
-    def realPlay(self, *args):
+    def realPlay(self, addr, tags, stuff, source):
         print "               played"
-        if self.progInd==0 and self.playingBackup:
+        if stuff[0] == 0:#self.progInd==0 and self.playingBackup:
             self.playing = self.playingBackup
             self.stateInd = self.stateIndBackup
             self.voiceInd = self.voiceIndBackup
             self.playingBackup = False
             
-        if self.playing:
-            print "              ", self.voices[self.voiceInd][self.stateInd].c[self.progInd]
-            phrase.play(self.voices[self.voiceInd][self.stateInd].c[self.progInd], channel=self.voiceInd)
-            self.progInd += 1
-            self.progInd %= 16
-            if self.progInd == 0:
+        for k in self.stateInd.keys():
+            c = self.voices[k][self.stateInd[k]].c[stuff[0]]
+            print "              ", k, c
+            phrase.play(c, channel=k)
+            if self.progInd == 15:
+                self.stateInd.clear()
                 self.playing = False
-        else:
-            print "not play"
     
-    def startVoice(self,addr, tags, stuff, source):
+    def startVoice(self, addr, tags, stuff, source):
         print "voice start      ", "channel", stuff[0], "     state", stuff[1]
         self.voiceIndBackup = stuff[0]
-        self.stateIndBackup = stuff[1]
+        self.stateIndBackup[stuff[0]] = stuff[1]
         self.playingBackup = True
         
     def changeState(self,addr, tags, stuff, source):
