@@ -22,8 +22,11 @@ def doublePlay(addr, tags, stuff, source):
     client.realPlay(addr, tags, stuff, source)
     server.stepper(addr, tags, stuff, source)
     
+def blank(*args):
+    return
 
 oscServSelf.addMsgHandler("/played", doublePlay)
+oscServSelf.addMsgHandler('/landini/member/reply', blank)
 
 client.setSelfServer(oscServSelf)
 server.setSelfServer(oscServSelf)

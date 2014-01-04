@@ -89,10 +89,10 @@ class MelServer:
     
     def stepper(self, addr, tags, stuff, source):
         
-        if self.progInd == 15:
+        if stuff[0] == 15:
             self.stateInd = self.randomMarkovStep()
             self.markovAddress = self.addresses[random.randrange(len(self.addresses))]
-            print "       ", self.stateInd, self.markovAddress
+            print "                    ", self.stateInd, self.markovAddress
             #send the stuff
             msg = OSC.OSCMessage()
             msg.setAddress("/send/GD")
@@ -102,7 +102,8 @@ class MelServer:
             msg.append(self.stateInd)
             self.oscLANdiniClient.send(msg)
         else:
-            print self.progInd
+            if stuff[0] == 8:
+                print self.progInd
         
         self.progInd = (self.progInd+1) % 16
             

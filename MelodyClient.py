@@ -54,7 +54,7 @@ class MelClient:
         #code to set up handlers
     
     def realPlay(self, addr, tags, stuff, source):
-        print "               played"
+        #print "               played"
         if stuff[0] == 0:#self.progInd==0 and self.playingBackup:
             self.playing = self.playingBackup
             self.stateInd = self.stateIndBackup

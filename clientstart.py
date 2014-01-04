@@ -13,7 +13,11 @@ oscServSelf.addDefaultHandlers()
 
 client = MelodyClient.MelClient(["testvoice1.txt", "testvoice2.txt"])
 
+def blank(*args):
+    return
+
 oscServSelf.addMsgHandler("/played", client.realPlay)
+oscServSelf.addMsgHandler('/landini/member/reply', blank)
 
 client.setSelfServer(oscServSelf)
 
