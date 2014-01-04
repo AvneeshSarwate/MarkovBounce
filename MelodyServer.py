@@ -87,7 +87,7 @@ class MelServer:
     def doublehandler(self, addr, tags, stuff, source):
         print "double working"
     
-    def stepper(self, *args):
+    def stepper(self, addr, tags, stuff, source):
         
         if self.progInd == 15:
             self.stateInd = self.randomMarkovStep()

@@ -65,9 +65,9 @@ class MelClient:
             c = self.voices[k][self.stateInd[k]].c[stuff[0]]
             print "              ", k, c
             phrase.play(c, channel=k)
-            if self.progInd == 15:
-                self.stateInd.clear()
-                self.playing = False
+        if stuff[0] == 15:
+            self.stateInd.clear()
+            self.playing = False
     
     def startVoice(self, addr, tags, stuff, source):
         print "voice start      ", "channel", stuff[0], "     state", stuff[1]
