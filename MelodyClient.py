@@ -55,6 +55,7 @@ class MelClient:
     
     def realPlay(self, addr, tags, stuff, source):
         #print "               played"
+        self.progInd = stuff[0] 
         if stuff[0] == 0:#self.progInd==0 and self.playingBackup:
             self.playing = self.playingBackup
             self.stateInd = self.stateIndBackup
@@ -63,14 +64,14 @@ class MelClient:
             
         for k in self.stateInd.keys():
             c = self.voices[k][self.stateInd[k]].c[stuff[0]]
-            print "              ", k, c
+            print "              ", k, c, stuff[0]
             phrase.play(c, channel=k)
         if stuff[0] == 15:
             self.stateInd.clear()
             self.playing = False
     
     def startVoice(self, addr, tags, stuff, source):
-        print "voice start      ", "channel", stuff[0], "     state", stuff[1]
+        print "voice start      ", "channel", stuff[0], "     state", stuff[1], "     progInd", self.progInd
         self.voiceIndBackup = stuff[0]
         self.stateIndBackup[stuff[0]] = stuff[1]
         self.playingBackup = True

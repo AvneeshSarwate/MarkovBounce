@@ -89,7 +89,7 @@ class MelServer:
     
     def stepper(self, addr, tags, stuff, source):
         
-        if stuff[0] == 15:
+        if stuff[0] == 3:
             self.stateInd = self.randomMarkovStep()
             self.markovAddress = self.addresses[random.randrange(len(self.addresses))]
             print "                    ", self.stateInd, self.markovAddress
