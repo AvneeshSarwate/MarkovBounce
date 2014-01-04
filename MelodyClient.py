@@ -22,7 +22,7 @@ class MelClient:
         self.progInd = 0
         self.voiceInd = 0
         self.stateInd = 0
-        self.playing = True
+        self.playing = False
         
         self.voiceIndBackup = 0
         self.stateIndBackup = 0
@@ -68,6 +68,8 @@ class MelClient:
             self.progInd %= 16
             if self.progInd == 0:
                 self.playing = False
+        else:
+            print "not play"
     
     def startVoice(self,addr, tags, stuff, source):
         print "voice start      ", "channel", stuff[0], "     state", stuff[1]

@@ -659,9 +659,10 @@ class MultiLoop:
             print addr
         for addr in self.oscServUI.getOSCAddressSpace():
             print addr
-    
-    def gridToProg(self, grid, scale, root):
-        notes = self.scaleNotes(root, scale)
+            
+    @staticmethod
+    def gridToProg(grid, scale, root):
+        notes = MultiLoop.scaleNotes(root, scale)
         prog = phrase.Progression()
         for i in range(len(grid)):
             if sum(grid[i]) == 0:
@@ -731,8 +732,8 @@ class MultiLoop:
                 state.prog = self.gridToProg(state.grid, state.scale, state.root)
             self.pullUpGrid(state.grid, "/" +str(si+1) + "/grid")
             
-    
-    def scaleNotes(self, root, scale):
+    @staticmethod
+    def scaleNotes(root, scale):
         notes = [0]*16
         for i in range(16):
             notes[i] = root + (i/len(scale))*12 + scale[i%len(scale)] 
@@ -850,8 +851,8 @@ class MultiLoop:
         
         return self.gridKeyToString(state.grid, state.scale) + "+" + rootstr + "+" + colsubstring
         
-    
-    def stringToGridKey(self, string): #rename 
+    @staticmethod
+    def stringToGridKey(string): #rename 
         gridstring = string.split("+")[0]
         colstr = gridstring.split(";")
         strgrid = [i.split(",") for i in colstr]
@@ -861,9 +862,10 @@ class MultiLoop:
         strkey = keystr.split(",")
         key = [int(i) for i in strkey]
         return grid, key
-        
-    def stringToMiniState(self, string):
-        grid, scale = self.stringToGridKey(string.split("+")[0]+"+"+string.split("+")[1])
+    
+    @staticmethod    
+    def stringToMiniState(string):
+        grid, scale = MultiLoop.stringToGridKey(string.split("+")[0]+"+"+string.split("+")[1])
         
         root = int(string.split("+")[2])
         if string.split("+")[3].split(";")[0] == "":
@@ -1267,16 +1269,3 @@ class MultiLoop:
     
     
         
-        
-    
-n = [60, 62, 64, 65]
-t = [1, 1, 1, 1]
-p = phrase.Phrase(n, t)
-trans = [1, 2, 5, 1]
-
-loop = MultiLoop(3)
-#loop2 = Looper(p, trans)
-#loop.check()
-loop.uiStart()
-loop.playStart()
-loop.loopStart()
