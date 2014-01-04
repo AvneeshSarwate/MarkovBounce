@@ -100,3 +100,6 @@ Piano Button not working, but chuck simulation of it works
 messages successfully sending over network with "all" as address
 
 fixed bug, now multiple voices should play on one client 
+
+Everything seems to be working with normal markov,
+	but sweeps doesn't send signals to anything but itself (might just require restart)
