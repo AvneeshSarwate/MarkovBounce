@@ -121,6 +121,7 @@ class MelServer:
         msg.setAddress("/send/GD")
         msg.append(self.markovAddress)
         msg.append("/markovButton")
+        msg.append(self.voiceInd)
         msg.append(self.stateInd)
         self.oscLANdiniClient.send(msg)
         

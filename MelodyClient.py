@@ -77,7 +77,7 @@ class MelClient:
         self.playingBackup = True
         
     def changeState(self,addr, tags, stuff, source):
-        self.stateInd = stuff[0]
+        self.stateInd[stuff[0]] = stuff[1]
     
     def pianoKey(self,addr, tags, stuff, source):
         print "                           ",stuff

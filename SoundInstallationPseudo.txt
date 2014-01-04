@@ -93,13 +93,19 @@ testing order:
 	run a real version across 2 computers
 		
 ______________________________________________________________________________________________
+
 server and client doing markov steps together when comp addresses is ['all']
 markov Button working
 Piano Button not working, but chuck simulation of it works
-
+____________________________
 messages successfully sending over network with "all" as address
-
+____________________________
 fixed bug, now multiple voices should play on one client 
-
+____________________________
 Everything seems to be working with normal markov,
 	but sweeps doesn't send signals to anything but itself (might just require restart)
+
+added fix for making MarkovButton work with multi-voice change in client
+	(NOT TESTED)
+	
+Piano mode problem still not solved 
