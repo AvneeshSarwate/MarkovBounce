@@ -1,0 +1,7 @@
+1
+4
+test1.ss test2.ss test3.ss test4.ss
+1 0 1 0
+1 0 1 0
+0 1 0 1
+0 1 0 1
