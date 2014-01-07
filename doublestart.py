@@ -13,10 +13,10 @@ oscServSelf = OSC.OSCServer(("127.0.0.1", 50505)) #LANdini 50505, 5174 chuck
 oscServSelf.addDefaultHandlers()
 
 
-server = MelodyServer.MelServer("testvoice2.txt", "keyfile1.txt", "testaddrs.txt")
+server = MelodyServer.MelServer("testvoice1.txt", "keyfile1.txt", "testaddrs.txt")
 
 
-client = MelodyClient.MelClient(["testvoice1.txt", "testvoice2.txt"])
+client = MelodyClient.MelClient(["testvoice1.txt", "testvoice2.txt", "testvoice3.txt"])
 
 def doublePlay(addr, tags, stuff, source):
     client.realPlay(addr, tags, stuff, source)

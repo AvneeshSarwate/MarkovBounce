@@ -21,7 +21,7 @@ class MelServer:
         Constructor
         '''
         self.markovChain = []
-        self.addresses = open(computerNames).read().split("\n") #make set?
+        self.addresses = [] # open(computerNames).read().split("\n") #make set?
         self.markovAddress = 0
         self.pianoAddresses = {}
         self.keyToNote = open(keyFile).read().split("\n")
@@ -42,7 +42,8 @@ class MelServer:
             compNameFile.write(compRead)
             compNameFile.close()
             
-
+        self.addresses.append(self.myAddress)
+        
         self.priority = self.addresses.index(self.myAddress)
         
         self.numVoices = 3
@@ -56,6 +57,7 @@ class MelServer:
         
         self.oscLANdiniClient = OSC.OSCClient()
         self.oscLANdiniClient.connect(("127.0.0.1", 50506))
+        
         
         #self.oscServSelf = oscServer
 #        self.oscServSelf = OSC.OSCServer(("127.0.0.1", 50505)) #LANdini 50505, 5174 chuck
@@ -87,6 +89,9 @@ class MelServer:
         print
         print self.markovChain
         
+    def userNamesCallback(self, addr, tags, stuff, source):
+        print "            addresses", stuff
+        self.addresses = stuff + self.addresses
     
     def normalize(self, grid):
         for i in range(len(grid)):
@@ -235,6 +240,11 @@ class MelServer:
     def setSelfServer(self, server):
         self.oscServSelf = server
         self.oscServSelf.addMsgHandler("/addrProp", self.addrRecv)
+        self.oscServSelf.addMsgHandler("/landini/userNames", self.userNamesCallback)
+        msg = OSC.OSCMessage()
+        msg.setAddress("/userNames")
+        msg.append("please")
+        self.oscLANdiniClient.send(msg)
     
     def loopStart(self):
         try :

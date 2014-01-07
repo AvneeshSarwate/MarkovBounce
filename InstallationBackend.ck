@@ -81,7 +81,7 @@ for(0 => int i; i < nInst; i++) {
     m[i] => g;
 }
 
-1::second => dur whole;
+.8::second => dur whole;
 2::second => dur slowest;
 .01::second => dur split;
 
@@ -300,7 +300,7 @@ fun void playChord(Mandolin m[], chord c, dur whole, int chan) {
     //<<<"function played chord">>>;
 }
 
-spork~ timerLANdini();
+//spork~ timerLANdini();
 
 // infinite event loop
 while ( true )
