@@ -110,4 +110,8 @@ added fix for making MarkovButton work with multi-voice change in client
 	
 Piano mode problem still not solved 
 
-Coded up solution to not let differnt markov melodies play on same computer
+____________________________
+
+ensuring no "overlap" of melodies on computer seems to be working. 
+created a setup for testing with only 3 computers, so no "blank spots"
+	from sending to non existent addresses 

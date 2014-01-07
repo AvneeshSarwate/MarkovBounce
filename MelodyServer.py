@@ -30,8 +30,19 @@ class MelServer:
         self.stateInd = 0
         self.playDecider = {}
         
-        
-        self.myAddress = raw_input("\nEnter your computer name:")
+        compNameFile = open("selfcomp.txt")
+        oldCompName = compNameFile.read().strip("\n")
+        compNameFile.close()
+        compRead = raw_input("\n\nIs the name of your computer " + oldCompName +"?" +
+                           "\n If so, hit enter. If not, type it in below:\n")
+        if(compRead == ""): self.myAddress = oldCompName
+        else:
+            self.myAddress = compRead
+            compNameFile = open("selfcomp.txt", "w")
+            compNameFile.write(compRead)
+            compNameFile.close()
+            
+
         self.priority = self.addresses.index(self.myAddress)
         
         self.numVoices = 3
@@ -104,7 +115,7 @@ class MelServer:
             #  = random.sample(self.addresses.difference(self.playingset), 1)[0]
             
             
-            print "                    ", self.stateInd, self.markovAddress
+            #print "                    progInd", stuff[0], "state: ", self.stateInd, self.markovAddress
             #send the stuff
             msg = OSC.OSCMessage()
             msg.setAddress("/send/GD")
@@ -122,8 +133,8 @@ class MelServer:
             
     def addrPropose(self):
         propList = random.sample(self.addresses, self.numVoices)
-        self.playDecider[self.priority] = propList
-        print self.priority, propList, 'pre'
+        self.playDecider[self.priority] = propList #shouldn't cause problems even if sending to "all"
+        #print self.priority, propList, 'pre'
         j = 1
         #print len(propList)
         #testing of address picker
@@ -138,16 +149,19 @@ class MelServer:
         propString = ";".join(propList)
         msg = OSC.OSCMessage()
         msg.setAddress("/send/GD")
-        msg.append("allButMe")
+        msg.append("all") #is not working for "allButMe"
         msg.append("/addrProp")
         msg.append(propString)
         msg.append(self.priority)
         self.oscLANdiniClient.send(msg)
     
     def addrRecv(self, addr, tags, stuff, source):
+        
         propList = stuff[0].split(";")
         priority = stuff[1]
         self.playDecider[priority] = propList
+        
+        print source, len(self.playDecider)
         
         if len(self.playDecider) == self.numVoices:
             #print "         len(playDecider) = ", len(self.playDecider)
@@ -160,7 +174,7 @@ class MelServer:
                     if self.playDecider[priList[i]][0] in self.playDecider[priList[j]]:
                         self.playDecider[priList[j]].remove(self.playDecider[priList[i]][0])
             
-            #print [self.playDecider[priList[i]][0] for i in range(self.numVoices)], "\n\n\n"    
+            print [self.playDecider[priList[i]][0] for i in range(self.numVoices)], "\n\n\n"    
             self.markovAddress = self.playDecider[self.priority][0]
             self.playDecider.clear()
             #print self.markovAddress
@@ -220,6 +234,7 @@ class MelServer:
     
     def setSelfServer(self, server):
         self.oscServSelf = server
+        self.oscServSelf.addMsgHandler("/addrProp", self.addrRecv)
     
     def loopStart(self):
         try :
