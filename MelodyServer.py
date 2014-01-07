@@ -8,6 +8,7 @@ import random
 import OSC
 import subprocess
 import threading
+import copy
 
 class MelServer:
     '''
@@ -20,13 +21,20 @@ class MelServer:
         Constructor
         '''
         self.markovChain = []
-        self.addresses = open(computerNames).read().split("\n")
+        self.addresses = open(computerNames).read().split("\n") #make set?
         self.markovAddress = 0
         self.pianoAddresses = {}
         self.keyToNote = open(keyFile).read().split("\n")
         self.progInd = 0
         self.voiceInd = 0
         self.stateInd = 0
+        self.playDecider = {}
+        
+        
+        self.myAddress = raw_input("\nEnter your computer name:")
+        self.priority = self.addresses.index(self.myAddress)
+        
+        self.numVoices = 3
         
         numButtons = 8
         
@@ -88,10 +96,14 @@ class MelServer:
         print "double working"
     
     def stepper(self, addr, tags, stuff, source):
-        
+        if stuff[0] == 14:
+            self.addrPropose()
         if stuff[0] == 15:
             self.stateInd = self.randomMarkovStep()
-            self.markovAddress = self.addresses[random.randrange(len(self.addresses))]
+#            self.markovAddress = self.addresses[random.randrange(len(self.addresses))]
+            #  = random.sample(self.addresses.difference(self.playingset), 1)[0]
+            
+            
             print "                    ", self.stateInd, self.markovAddress
             #send the stuff
             msg = OSC.OSCMessage()
@@ -108,7 +120,51 @@ class MelServer:
         self.progInd = (self.progInd+1) % 16
             
             
+    def addrPropose(self):
+        propList = random.sample(self.addresses, self.numVoices)
+        self.playDecider[self.priority] = propList
+        print self.priority, propList, 'pre'
+        j = 1
+        #print len(propList)
+        #testing of address picker
+#        for i in range(self.numVoices-1):
+#            j += 1
+#            stuff = []
+#            stuff.append(";".join(random.sample(self.addresses, self.numVoices)))
+#            stuff.append(i+3)
+#            print stuff[1], stuff[0].split(";"), "pre"
+#            if j == 3: print "              sanity check", j
+#            self.addrRecv("a", "b", stuff, "c") 
+        propString = ";".join(propList)
+        msg = OSC.OSCMessage()
+        msg.setAddress("/send/GD")
+        msg.append("allButMe")
+        msg.append("/addrProp")
+        msg.append(propString)
+        msg.append(self.priority)
+        self.oscLANdiniClient.send(msg)
+    
+    def addrRecv(self, addr, tags, stuff, source):
+        propList = stuff[0].split(";")
+        priority = stuff[1]
+        self.playDecider[priority] = propList
+        
+        if len(self.playDecider) == self.numVoices:
+            #print "         len(playDecider) = ", len(self.playDecider)
+            priList = sorted(self.playDecider.keys())
+            #for i in sorted(self.playDecider.keys()):
+                #print i, self.playDecider[i]
+            priInds = [0] * self.numVoices
+            for i in range(self.numVoices):
+                for j in range(i+1, self.numVoices):
+                    if self.playDecider[priList[i]][0] in self.playDecider[priList[j]]:
+                        self.playDecider[priList[j]].remove(self.playDecider[priList[i]][0])
             
+            #print [self.playDecider[priList[i]][0] for i in range(self.numVoices)], "\n\n\n"    
+            self.markovAddress = self.playDecider[self.priority][0]
+            self.playDecider.clear()
+            #print self.markovAddress
+        
             
     
     def markovButton(self, addr, tags, stuff, source):
@@ -156,6 +212,7 @@ class MelServer:
     def playStart(self):
         self.audioThread = threading.Thread(target=self.oscServSelf.serve_forever)
         self.audioThread.start()
+    
     
     def uiStart(self):
         self.uiThread = threading.Thread(target=self.oscServUI.serve_forever)

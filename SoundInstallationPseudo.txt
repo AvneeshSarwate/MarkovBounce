@@ -109,3 +109,5 @@ added fix for making MarkovButton work with multi-voice change in client
 	(NOT TESTED)
 	
 Piano mode problem still not solved 
+
+Coded up solution to not let differnt markov melodies play on same computer
