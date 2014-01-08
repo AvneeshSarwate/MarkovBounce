@@ -11,7 +11,7 @@ import threading
 oscServSelf = OSC.OSCServer(("127.0.0.1", 50505)) #LANdini 50505, 5174 chuck
 oscServSelf.addDefaultHandlers()
 
-client = MelodyClient.MelClient(["testvoice1.txt", "testvoice2.txt"])
+client = MelodyClient.MelClient(["tofu/tofumarkov.txt", "snowie/snowiemarkov.txt", "darkpad/darkpadmarkov.txt"])
 
 def blank(*args):
     return
