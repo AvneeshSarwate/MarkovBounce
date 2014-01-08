@@ -43,7 +43,7 @@ class MelClient:
             self.voices.append([])
             nStates = int(fileStrings[i].split("\n")[1])
             for j in range(nStates):
-                miniStateFile = fileStrings[i].split("\n")[2].split(" ")[j]
+                miniStateFile = voiceList[i].split("/")[0] + "/" + fileStrings[i].split("\n")[2].split(" ")[j]
                 print miniStateFile
                 grid, scale, root, colsub = m.stringToMiniState(open(miniStateFile).read())
                 self.voices[i].append(m.gridToProg(grid, scale, root))
