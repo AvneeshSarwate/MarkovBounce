@@ -115,3 +115,9 @@ ____________________________
 ensuring no "overlap" of melodies on computer seems to be working. 
 created a setup for testing with only 3 computers, so no "blank spots"
 	from sending to non existent addresses 
+	
+____________________________
+non overlapping markov melodies working
+
+coded up simpler non-overlapping piano movement 
+	that is analagous to markov melody movement

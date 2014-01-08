@@ -1,12 +1,13 @@
 OscSend confLANdini;
 confLANdini.setHost( "127.0.0.1", 50506 );
 
+/*
 confLANdini.startMsg("/send/GD, s, s, s, i");
-"all" => confLANdini.addString;
+"AvneeshSarwate" => confLANdini.addString;
 "/addrProp" => confLANdini.addString;
 "on"=> confLANdini.addString;
-1 => confLANdini.addInt;
-
+2 => confLANdini.addInt;
+*/
 
 
 /*
@@ -16,13 +17,13 @@ confLANdini.startMsg("/send/GD, s, s, i");
 1 => confLANdini.addInt;
 */
 
-/*
+
 confLANdini.startMsg("/send/GD, s, s, i, i");
 "all" => confLANdini.addString;
 "/markovStep" => confLANdini.addString;
 0 => confLANdini.addInt;
 1 => confLANdini.addInt;
-*/
+
 
 /*
 confLANdini.startMsg("/send/GD, s, s, i, s, i");

@@ -44,7 +44,7 @@ class MelServer:
             
         self.addresses.append(self.myAddress)
         
-        self.priority = self.addresses.index(self.myAddress)
+        self.priority = -1 #self.addresses.index(self.myAddress)
         
         self.numVoices = 3
         
@@ -92,6 +92,10 @@ class MelServer:
     def userNamesCallback(self, addr, tags, stuff, source):
         print "            addresses", stuff
         self.addresses = stuff + self.addresses
+        self.addresses.sort()
+        self.priority = self.addresses.index(self.myAddress)
+        print "priority", self.priority
+        
     
     def normalize(self, grid):
         for i in range(len(grid)):
@@ -160,6 +164,49 @@ class MelServer:
         msg.append(self.priority)
         self.oscLANdiniClient.send(msg)
     
+    def pianoPropose(self):
+        nonPlayingAddr = copy.deepcopy(self.addresses)
+        for i in self.allPlaying:
+            nonPlayingAddr.remove(i)
+        pianoPropList = random.sample(nonPlayingAddr, self.numVoices)
+        propString = ";".join(pianoPropList)
+        msg = OSC.OSCMessage()
+        msg.setAddress("/send/GD")
+        msg.append("all") #is not working for "allButMe"
+        msg.append("/pianoProp")
+        msg.append(propString)
+        msg.append(self.priority)
+        self.oscLANdiniClient.send(msg)
+    
+    def pianoRecv(self, addr, tags, stuff, source):
+        
+        pianoPropList = stuff[0].split(";")
+        priority = stuff[1]
+        self.pianoDecider[priority] = pianoPropList
+        
+        print source, len(self.pianoDecider)
+        
+        if len(self.pianoDecider) == self.numVoices:
+            #print "         len(pianoDecider) = ", len(self.pianoDecider)
+            priList = sorted(self.pianoDecider.keys())
+            #for i in sorted(self.pianoDecider.keys()):
+                #print i, self.pianoDecider[i]
+            priInds = [0] * self.numVoices
+            for i in range(self.numVoices):
+                for j in range(i+1, self.numVoices):
+                    if self.pianoDecider[priList[i]][0] in self.pianoDecider[priList[j]]:
+                        self.pianoDecider[priList[j]].remove(self.pianoDecider[priList[i]][0])
+            
+            print [self.pianoDecider[priList[i]][0] for i in range(self.numVoices)], "\n\n\n"    
+            
+            #TODO: TURN OFF all notes playing at previous piano address
+            #TODO: Make piano messages from client ordered guaranteed delivery
+            
+            self.pianoAddress = self.pianoDecider[self.priority][0]
+            self.pianoPlaying = [self.pianoDecider[priList[i]][0] for i in range(self.numVoices)]
+            self.pianoDecider.clear()
+
+    
     def addrRecv(self, addr, tags, stuff, source):
         
         propList = stuff[0].split(";")
@@ -181,7 +228,9 @@ class MelServer:
             
             print [self.playDecider[priList[i]][0] for i in range(self.numVoices)], "\n\n\n"    
             self.markovAddress = self.playDecider[self.priority][0]
+            self.allPlaying = [self.playDecider[priList[i]][0] for i in range(self.numVoices)]
             self.playDecider.clear()
+            self.pianoPropose()
             #print self.markovAddress
         
             
@@ -209,7 +258,7 @@ class MelServer:
             #send stuff
             msg = OSC.OSCMessage()
             msg.setAddress("/send/GD")
-            msg.append("all")#self.pianoAddresses[keyInd])
+            msg.append("all")  #self.pianoAddress    #self.pianoAddresses[keyInd])
             msg.append("/pianoButton")
             msg.append(self.keyToNote[keyInd])
             msg.append("on")
@@ -219,7 +268,7 @@ class MelServer:
             #send stuff
             msg = OSC.OSCMessage()
             msg.setAddress("/send/GD")
-            msg.append("all")#self.pianoAddresses[keyInd])
+            msg.append("all")     #self.pianoAddress #self.pianoAddresses[keyInd])
             msg.append("/pianoButton")
             msg.append(self.keyToNote[keyInd])
             msg.append("off")
@@ -240,6 +289,7 @@ class MelServer:
     def setSelfServer(self, server):
         self.oscServSelf = server
         self.oscServSelf.addMsgHandler("/addrProp", self.addrRecv)
+        self.oscServSelf.addMsgHandler("/pianoProp", self.pianoRecv)
         self.oscServSelf.addMsgHandler("/landini/userNames", self.userNamesCallback)
         msg = OSC.OSCMessage()
         msg.setAddress("/userNames")
