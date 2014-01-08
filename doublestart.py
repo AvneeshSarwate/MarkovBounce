@@ -13,7 +13,7 @@ oscServSelf = OSC.OSCServer(("127.0.0.1", 50505)) #LANdini 50505, 5174 chuck
 oscServSelf.addDefaultHandlers()
 
  
-server = MelodyServer.MelServer("testvoice2.txt", "keyfile1.txt", "testaddrs.txt")
+server = MelodyServer.MelServer("snowie/snowiemarkov.txt", "keyfile1.txt", "testaddrs.txt")
 
 
 client = MelodyClient.MelClient(["tofu/tofumarkov.txt", "snowie/snowiemarkov.txt", "darkpad/darkpadmarkov.txt"])

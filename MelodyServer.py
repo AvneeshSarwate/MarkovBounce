@@ -230,7 +230,7 @@ class MelServer:
             self.markovAddress = self.playDecider[self.priority][0]
             self.allPlaying = [self.playDecider[priList[i]][0] for i in range(self.numVoices)]
             self.playDecider.clear()
-            self.pianoPropose()
+            #self.pianoPropose()
             #print self.markovAddress
         
             
