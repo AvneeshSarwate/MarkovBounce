@@ -7,16 +7,20 @@ import MelodyServer
 import MelodyClient
 import OSC
 import threading
+import sys
 
 
 oscServSelf = OSC.OSCServer(("127.0.0.1", 50505)) #LANdini 50505, 5174 chuck
 oscServSelf.addDefaultHandlers()
 
+markovlist = ["snowie/snowiemarkov.txt", "tofu/tofumarkov.txt", "darkpad/darkpadmarkov.txt"]
+
+ind = int(sys.argv[1])
  
-server = MelodyServer.MelServer("snowie/snowiemarkov.txt", "keyfile1.txt", "testaddrs.txt")
+server = MelodyServer.MelServer(markovlist[ind], "keyfile1.txt", "testaddrs.txt")
 
 
-client = MelodyClient.MelClient(["tofu/tofumarkov.txt", "snowie/snowiemarkov.txt", "darkpad/darkpadmarkov.txt"])
+client = MelodyClient.MelClient(["snowie/snowiemarkov.txt", "tofu/tofumarkov.txt", "darkpad/darkpadmarkov.txt"])
 
 def doublePlay(addr, tags, stuff, source):
     client.realPlay(addr, tags, stuff, source)

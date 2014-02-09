@@ -239,11 +239,11 @@ class MelServer:
         if stuff[0] == 0: return
         self.stateInd = int(addr.split("/")[2])-1 #address is /name/col/row and want col
         print "    MARKOV", self.stateInd, self.markovAddress
-        
+            
         #send it over
         msg = OSC.OSCMessage()
         msg.setAddress("/send/GD")
-        msg.append(self.markovAddress)
+        msg.append("all")
         msg.append("/markovButton")
         msg.append(self.voiceInd)
         msg.append(self.stateInd)
@@ -263,8 +263,10 @@ class MelServer:
             msg.append(self.keyToNote[keyInd])
             msg.append("on")
             msg.append(self.voiceInd)
+            msg.append(keyInd)
             self.oscLANdiniClient.send(msg)
         else:
+            return
             #send stuff
             msg = OSC.OSCMessage()
             msg.setAddress("/send/GD")
@@ -313,7 +315,7 @@ class MelServer:
                 self.uiThread.join() ##!!!
             #self.chuckThread.join()
             #print "Done"      
-        
+            
         
 #server = MelServer("testvoice1.txt", "keyfile1.txt", "computernames.txt")
 #server.playStart()
